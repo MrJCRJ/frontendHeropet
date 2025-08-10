@@ -2,7 +2,7 @@ import axios from "axios";
 import type { Cliente } from "../types/cliente";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000", // ajuste para seu backend
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 export const getClientes = async (): Promise<Cliente[]> => {
