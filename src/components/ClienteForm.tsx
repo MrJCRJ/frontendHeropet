@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import type { Cliente } from "../types/cliente";
+import { FormField } from "../components/ui/FormField";
+import { Button } from "../components/ui/Button";
 
 type ClienteFormProps = {
-  initialData?: Partial<Cliente>; // dados iniciais para edição
-  onSubmit: (data: Partial<Cliente>) => void; // callback quando o formulário for enviado
-  loading?: boolean; // opcional para mostrar loading
+  initialData?: Partial<Cliente>;
+  onSubmit: (data: Partial<Cliente>) => void;
+  loading?: boolean;
 };
 
 export function ClienteForm({
@@ -33,56 +35,64 @@ export function ClienteForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <FormField
         name="cpf_cnpj"
+        label="CPF/CNPJ"
+        placeholder="Digite o CPF ou CNPJ"
         value={formData.cpf_cnpj}
         onChange={handleChange}
-        placeholder="CPF/CNPJ"
         required
       />
-      <input
+      <FormField
         name="nome"
+        label="Nome"
+        placeholder="Digite o nome"
         value={formData.nome}
         onChange={handleChange}
-        placeholder="Nome"
         required
       />
-      <input
+      <FormField
         name="email"
+        label="Email"
         type="email"
+        placeholder="Digite o email"
         value={formData.email}
         onChange={handleChange}
-        placeholder="Email"
         required
       />
-      <input
+      <FormField
         name="telefone"
+        label="Telefone"
+        placeholder="Digite o telefone"
         value={formData.telefone}
         onChange={handleChange}
-        placeholder="Telefone"
       />
-      <input
+      <FormField
         name="cep"
+        label="CEP"
+        placeholder="Digite o CEP"
         value={formData.cep}
         onChange={handleChange}
-        placeholder="CEP"
       />
-      <input
+      <FormField
         name="numero"
+        label="Número"
+        placeholder="Digite o número"
         value={formData.numero}
         onChange={handleChange}
-        placeholder="Número"
       />
-      <input
+      <FormField
         name="complemento"
+        label="Complemento"
+        placeholder="Digite o complemento"
         value={formData.complemento}
         onChange={handleChange}
-        placeholder="Complemento"
       />
-      <button type="submit" disabled={loading}>
-        {loading ? "Salvando..." : "Salvar"}
-      </button>
+
+      <Button type="submit" variant="primary" fullWidth isLoading={loading}>
+        Salvar
+      </Button>
     </form>
   );
 }

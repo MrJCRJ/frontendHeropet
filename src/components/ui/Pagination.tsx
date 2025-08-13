@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useMemo } from "react";
+import { Button } from "./Button";
 
 interface PaginationProps {
   totalItems: number;
@@ -15,23 +16,28 @@ export const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
+  const pages = useMemo(() => {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
+  }, [totalPages]);
+
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex justify-center mt-8 gap-2">
-      {Array.from({ length: totalPages }, (_, i) => (
-        <button
-          key={i}
-          onClick={() => onPageChange(i + 1)}
-          className={`px-3 py-1 rounded-md text-sm font-medium transition-colors ${
-            currentPage === i + 1
-              ? "bg-blue-600 text-white"
-              : "bg-[#1a1d23] border border-gray-700 text-gray-300 hover:bg-[#22262e]"
-          }`}
+    <nav
+      className="flex justify-center mt-8 gap-2"
+      aria-label="Paginação de resultados"
+      role="navigation"
+    >
+      {pages.map((page) => (
+        <Button
+          key={page}
+          variant={currentPage === page ? "primary" : "ghost"}
+          onClick={() => onPageChange(page)}
+          aria-current={currentPage === page ? "page" : undefined}
         >
-          {i + 1}
-        </button>
+          {page}
+        </Button>
       ))}
-    </div>
+    </nav>
   );
 };
