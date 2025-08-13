@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { getClientes, deleteCliente } from "../api/cliente";
 import type { Cliente } from "../types/cliente";
 import { Link, useNavigate } from "react-router-dom";
-import { Button } from "../components/ui/Button";
-import { Input } from "../components/ui/Input";
-import { Card } from "../components/ui/Card";
-import { Pagination } from "../components/ui/Pagination";
+import { Button, Input, Card, Pagination } from "../components/ui";
 
 export const ClienteList: React.FC = () => {
   const [clientes, setClientes] = useState<Cliente[]>([]);
@@ -41,18 +38,21 @@ export const ClienteList: React.FC = () => {
     }
   };
 
-  const filteredClientes = clientes.filter((c) =>
-    c.nome.toLowerCase().includes(search.toLowerCase())
+  const filteredClientes = useMemo(
+    () =>
+      clientes.filter((c) =>
+        c.nome.toLowerCase().includes(search.toLowerCase())
+      ),
+    [clientes, search]
   );
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedClientes = filteredClientes.slice(
-    startIndex,
-    startIndex + itemsPerPage
-  );
+  const paginatedClientes = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredClientes.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredClientes, currentPage]);
 
   return (
-    <div className="min-h-screen bg-[#0f1115] text-white px-6 py-8">
+    <div className="min-h-screen bg-slate-900 text-white px-6 py-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
@@ -68,16 +68,27 @@ export const ClienteList: React.FC = () => {
         <div className="mb-6">
           <Input
             placeholder="Buscar cliente..."
+            aria-label="Buscar cliente"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
 
         {/* Lista */}
-        {loading && <p className="text-gray-400">Carregando clientes...</p>}
-        {error && <p className="text-red-400">{error}</p>}
+        {loading && (
+          <p className="text-gray-400" role="status">
+            Carregando clientes...
+          </p>
+        )}
+        {error && (
+          <p className="text-red-400" role="alert">
+            {error}
+          </p>
+        )}
         {!loading && !error && paginatedClientes.length === 0 && (
-          <p className="text-gray-400">Nenhum cliente encontrado.</p>
+          <p className="text-gray-400" role="status">
+            Nenhum cliente encontrado.
+          </p>
         )}
 
         {!loading && !error && paginatedClientes.length > 0 && (
@@ -86,6 +97,7 @@ export const ClienteList: React.FC = () => {
               <Card
                 key={cliente.id}
                 onClick={() => navigate(`/clientes/${cliente.id}`)}
+                clickable
               >
                 <div className="mb-3">
                   <h2 className="text-lg font-semibold group-hover:text-blue-400 transition-colors">

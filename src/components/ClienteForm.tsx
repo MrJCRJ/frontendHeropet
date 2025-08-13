@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import type { Cliente } from "../types/cliente";
-import { FormField } from "../components/ui/FormField";
-import { Button } from "../components/ui/Button";
+import { FormField, Button } from "./ui";
 
 type ClienteFormProps = {
   initialData?: Partial<Cliente>;

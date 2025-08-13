@@ -1,7 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { Cliente } from "../types/cliente"; // Ajuste o caminho conforme seu projeto
-import { getCliente } from "../api/cliente"; // Função que busca cliente pela API
+import type { Cliente } from "../types/cliente";
+import { getCliente } from "../api/cliente";
+import { Card, Button } from "../components/ui";
 
 export function ClienteDetails() {
   const { id } = useParams();
@@ -21,7 +22,7 @@ export function ClienteDetails() {
       try {
         const data = await getCliente(id);
         setCliente(data);
-      } catch (err) {
+      } catch {
         setError("Cliente não encontrado ou erro ao buscar dados.");
       } finally {
         setLoading(false);
@@ -31,42 +32,59 @@ export function ClienteDetails() {
     fetchCliente();
   }, [id]);
 
-  if (loading) return <div>Carregando detalhes do cliente...</div>;
+  if (loading)
+    return (
+      <p className="text-gray-400" role="status">
+        Carregando detalhes do cliente...
+      </p>
+    );
 
   if (error)
     return (
-      <div>
-        <p>{error}</p>
-        <button onClick={() => navigate("/clientes")}>Voltar para lista</button>
+      <div className="flex flex-col gap-4">
+        <p className="text-red-400" role="alert">
+          {error}
+        </p>
+        <Button variant="primary" onClick={() => navigate("/clientes")}>
+          Voltar para lista
+        </Button>
       </div>
     );
 
   return (
-    <div>
-      <h2>Detalhes do Cliente</h2>
-      <p>
-        <strong>Nome:</strong> {cliente?.nome}
-      </p>
-      <p>
-        <strong>CPF/CNPJ:</strong> {cliente?.cpf_cnpj}
-      </p>
-      <p>
-        <strong>Email:</strong> {cliente?.email}
-      </p>
-      <p>
-        <strong>Telefone:</strong> {cliente?.telefone ?? "Não informado"}
-      </p>
-      <p>
-        <strong>CEP:</strong> {cliente?.cep ?? "Não informado"}
-      </p>
-      <p>
-        <strong>Número:</strong> {cliente?.numero ?? "Não informado"}
-      </p>
-      <p>
-        <strong>Complemento:</strong> {cliente?.complemento ?? "Não informado"}
-      </p>
+    <div className="min-h-screen bg-slate-900 text-white px-6 py-8">
+      <div className="max-w-3xl mx-auto flex flex-col gap-6">
+        <h1 className="text-3xl font-bold">Detalhes do Cliente</h1>
 
-      <button onClick={() => navigate("/clientes")}>Voltar para lista</button>
+        <Card>
+          <p>
+            <strong>Nome:</strong> {cliente?.nome}
+          </p>
+          <p>
+            <strong>CPF/CNPJ:</strong> {cliente?.cpf_cnpj}
+          </p>
+          <p>
+            <strong>Email:</strong> {cliente?.email}
+          </p>
+          <p>
+            <strong>Telefone:</strong> {cliente?.telefone ?? "Não informado"}
+          </p>
+          <p>
+            <strong>CEP:</strong> {cliente?.cep ?? "Não informado"}
+          </p>
+          <p>
+            <strong>Número:</strong> {cliente?.numero ?? "Não informado"}
+          </p>
+          <p>
+            <strong>Complemento:</strong>{" "}
+            {cliente?.complemento ?? "Não informado"}
+          </p>
+        </Card>
+
+        <Button variant="primary" onClick={() => navigate("/clientes")}>
+          Voltar para lista
+        </Button>
+      </div>
     </div>
   );
 }
